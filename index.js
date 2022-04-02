@@ -53,6 +53,8 @@ client.connect((err) => {
 
   measurements = client.db().collection("measurements");
 
+  measurements;
+
   console.log(`${name} v${version} connected to mongodb`);
   app.listen(process.env.PORT, () => {
     console.log(`${name} v${version} listening on port ${process.env.PORT}`);
