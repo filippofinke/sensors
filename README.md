@@ -22,6 +22,18 @@ npm run start
 | KEY      | Authentication key     | -       |
 | URI      | MongoDB connection URI | -       |
 
+## Ingest data
+
+You must send a `post` request to `/` with the `X-API-Key` header containing the following JSON structure:
+
+```json
+{
+    "name": "SENSOR_NAME",
+    "value": SENSOR_VALUE,
+    "unit": "SENSOR_UNIT"
+}
+```
+
 ## Author
 
 👤 **Filippo Finke**
