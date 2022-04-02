@@ -41,7 +41,7 @@ app.post("/", (req, res) => {
   data.timestamp = new Date();
   measurements.insertOne(data);
 
-  return res.json(data);
+  return res.sendStatus(201);
 });
 
 console.log(`${name} v${version} connecting to mongodb...`);
