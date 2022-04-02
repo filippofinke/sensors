@@ -1,7 +1,6 @@
 <h1 align="center">Welcome to sensors 👋</h1>
 
 > Simple sensor data ingestion server
-> pè
 
 ## Install
 
