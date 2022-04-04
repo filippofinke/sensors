@@ -3,13 +3,12 @@
 #include "DHT.h"
 
 // Pin configuration
-#define LED_PIN 16
 #define DHT_PIN 2
 
 // General configuration
 #define NAME "in-"
 #define API_KEY "test"
-#define SERVER "https://eny2j6loaimbm.x.pipedream.net"
+#define SERVER "https://en9x7spkrqyob.x.pipedream.net"
 #define DELAY_MS 5000
 #define SSID "iPhone"
 #define PASSWORD "ciaocomestai"
@@ -19,17 +18,19 @@ DHT dht(DHT_PIN, DHT11);
 void setup () {
   Serial.begin(9600);
 
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 
   WiFi.begin(SSID, PASSWORD);
 
   Serial.println();
   Serial.print("Connecting to WiFi");
   while (WiFi.status() != WL_CONNECTED) {
-    digitalWrite(LED_PIN, LOW);
-    delay(500);
-    digitalWrite(LED_PIN, HIGH);
-    delay(500);
+    for (int i = 0; i < 2; i++) {
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(250);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(250);
+    }
     Serial.print(".");
   }
   Serial.println();
@@ -45,7 +46,7 @@ void setup () {
 
 void loop() {
   if (WiFi.status() == WL_CONNECTED) {
-    digitalWrite(LED_PIN, LOW);
+    digitalWrite(LED_BUILTIN, HIGH);
 
     Serial.println("Reading sensor data");
     float humidity = dht.readHumidity();
@@ -77,10 +78,11 @@ void loop() {
 
     } else {
       Serial.println("Error, could not read the sensors");
+      digitalWrite(LED_BUILTIN, LOW);
     }
   } else {
     Serial.println("Error, no WiFi connection!");
-    digitalWrite(LED_PIN, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
   }
   delay(DELAY_MS);
 }
