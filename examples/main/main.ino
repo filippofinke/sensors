@@ -7,12 +7,12 @@
 #define DHT_PIN 2
 
 // General configuration
+#define NAME "in-"
 #define API_KEY "test"
 #define SERVER "https://eny2j6loaimbm.x.pipedream.net"
 #define DELAY_MS 5000
 #define SSID "iPhone"
 #define PASSWORD "ciaocomestai"
-
 
 DHT dht(DHT_PIN, DHT11);
 
@@ -35,36 +35,12 @@ void setup () {
   Serial.println();
   Serial.print("Connected, ip address: ");
   Serial.println(WiFi.localIP());
-  
+
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
 
   dht.begin();
   Serial.println("DHT Initialized!");
-}
-
-void sendData(String name, float value, String unit) {
-
-  WiFiClientSecure client;
-  client.setInsecure();
-  client.connect(SERVER, 443);
-  
-  HTTPClient http;
-
-  http.begin(client, SERVER);
-
-  http.addHeader("X-API-Key", API_KEY);
-  http.addHeader("Content-Type", "application/json");
-
-  Serial.println("Sending sensors data...");
-  String data = "{\"name\": \"" + name + "\",\"value\": " + value + ",\"unit\": \"" + unit + "\"}";
-  int httpCode = http.POST(data);
-  Serial.printf("Status code: %d\n", httpCode);
-  String payload = http.getString();
-  Serial.println(payload);
-
-  http.end();
-
 }
 
 void loop() {
@@ -79,8 +55,25 @@ void loop() {
       Serial.printf("Humidity: %f\n", humidity);
       Serial.printf("Temperature: %f\n", temperature);
 
-      sendData("temperature", temperature, "c");
-      sendData("humidity", humidity, "h");
+      WiFiClientSecure client;
+      client.setInsecure();
+      client.connect(SERVER, 443);
+
+      HTTPClient http;
+
+      http.begin(client, SERVER);
+
+      http.addHeader("X-API-Key", API_KEY);
+      http.addHeader("Content-Type", "application/json");
+
+      Serial.println("Sending sensors data...");
+      String data = "[{\"name\": \"" + String(NAME) + "temperature\",\"value\": " + temperature + ",\"unit\": \"c\"},{\"name\": \"" + String(NAME) + "humidity\",\"value\": " + humidity + ",\"unit\": \"h\"}]";
+      int httpCode = http.POST(data);
+      Serial.printf("Status code: %d\n", httpCode);
+      String payload = http.getString();
+      Serial.println(payload);
+
+      http.end();
 
     } else {
       Serial.println("Error, could not read the sensors");
