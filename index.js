@@ -32,14 +32,22 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.post("/", (req, res) => {
-  const data = req.body;
+  let data = req.body;
 
-  if (!ajv.validate(schema, data)) {
-    return res.status(400).send(ajv.errorsText());
+  if (!Array.isArray(data)) {
+    data = [data];
   }
 
-  data.timestamp = new Date();
-  measurements.insertOne(data);
+  let date = new Date();
+
+  for (let measurement of data) {
+    if (!ajv.validate(schema, measurement)) {
+      return res.status(400).send(ajv.errorsText());
+    }
+    measurement.date = date;
+  }
+
+  measurements.insertMany(data);
 
   return res.sendStatus(201);
 });
